@@ -6,7 +6,7 @@ import { sectionBanner, toast, showFieldErrors, confirmDialog } from '../ui.js';
 import { setState, resetState, replaceState } from '../state.js';
 import { downloadExport, parseImport, MAX_IMPORT_BYTES } from '../import-export.js';
 import { hasSampleData } from '../sample-data.js';
-import { FEEDBACK_URL } from '../config.js';
+import { FEEDBACK_URL, FEEDBACK_FORM_URL, GITHUB_FEEDBACK_URL } from '../config.js';
 import { CATEGORIES } from '../../data/categories.js';
 import { NUTRITION_GOALS } from '../recipes.js';
 import { showTab } from './nutrition.js';
@@ -129,8 +129,9 @@ export function render(state) {
         <p class="card__text">NOVANTIQ Move está en etapa de prueba. Contanos qué te falta, qué no entendiste o qué falló.</p>
         <div class="btn-row card__actions">
           <a class="btn btn--primary" href="${FEEDBACK_URL}" target="_blank" rel="noopener">Enviar sugerencia o reportar un error</a>
+          ${FEEDBACK_FORM_URL ? html`<a class="btn btn--ghost" href="${GITHUB_FEEDBACK_URL}" target="_blank" rel="noopener">Tengo cuenta de GitHub</a>` : ''}
         </div>
-        <p class="field__hint">Se abre en una pestaña nueva. Nunca se envían tus datos de la app.</p>
+        <p class="field__hint">Se abre en una pestaña nueva${FEEDBACK_FORM_URL ? ' y no necesitás crear ninguna cuenta' : ''}. Nunca se envían tus datos de la app.</p>
       </section>
     </div>
   `;
