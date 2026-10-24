@@ -2,6 +2,11 @@
 
 > Organizá tu semana, mantené tus hábitos y seguí tu progreso en un solo lugar.
 
+**👉 Probala acá: <https://brianmettica97-creator.github.io/novantiq-move/>**
+Funciona en celular y computadora, y se puede instalar en la pantalla de inicio.
+
+**¿Qué le falta? ¿Algo no anduvo?** [Dejanos una sugerencia o reportá un error](https://github.com/brianmettica97-creator/novantiq-move/issues/new/choose).
+
 Aplicación web responsive de NOVANTIQ para organizar actividad física, rutinas semanales y alimentación.
 Esta es la **demo funcional**: HTML5, CSS3 y JavaScript moderno (módulos ES), sin frameworks ni dependencias,
 con persistencia local. Está preparada para evolucionar a una app multiusuario con base de datos y cuentas.
@@ -26,7 +31,22 @@ Después abrí <http://localhost:5173>. También sirve cualquier servidor estát
 | **Planes y plantillas** | 6 plantillas de ejemplo con filtros por actividad, nivel, duración, objetivo y equipamiento. Se aplican a una semana sin duplicar, con aviso de conflictos, y se pueden quitar. |
 | **Nutrición** | Planificador de comidas (receta o nota) con copia entre semanas, 12 recetas con fotos, pasos y alérgenos, lista de compras y preferencias. |
 | **Mi progreso** | Completadas vs. planificadas, minutos registrados, días activos, cumplimiento, actividades por categoría, historial de 8 semanas (con tooltip y vista de tabla) y hábitos opcionales. |
-| **Mi perfil** | Nombre visible, inicio de semana (lunes o domingo), actividades favoritas, texto grande, reducir animaciones, exportar datos (JSON) y borrar datos. |
+| **Mi perfil** | Nombre visible, inicio de semana (lunes o domingo), actividades favoritas, texto grande, reducir animaciones, exportar e importar datos (JSON), datos de ejemplo y borrar datos. |
+| **Primer uso** | Bienvenida en 3 pasos y opción de cargar una semana de ejemplo (marcada como tal y fácil de borrar). |
+| **App instalable** | Manifiesto, íconos y service worker: se instala en la pantalla de inicio y funciona sin conexión. |
+
+## Cómo instalarla en el celular
+
+- **Android (Chrome):** abrí el link → menú ⋮ → **Instalar app** o **Agregar a pantalla principal**.
+- **iPhone (Safari):** abrí el link → botón **Compartir** → **Agregar a inicio**.
+
+Tus datos quedan en ese dispositivo. Para pasarlos a otro, usá **Perfil → Exportar** y después **Importar** en el otro.
+
+## Sugerencias y errores
+
+Las sugerencias se reciben como [issues de GitHub](https://github.com/brianmettica97-creator/novantiq-move/issues/new/choose),
+con dos formularios: **💡 Sugerencia** y **🐞 Algo no funciona**. Se necesita una cuenta de GitHub (gratis).
+También se llega desde la app: **Perfil → Ayudanos a mejorar**.
 
 ## Arquitectura
 
@@ -54,13 +74,19 @@ Vistas (js/views/)  →  Lógica de dominio (activities, templates, meals…)  �
 
 ```
 index.html               Estructura base: barra superior, navegación, <main>, diálogo y avisos
+manifest.webmanifest     Datos para instalar la app (nombre, íconos, colores)
+sw.js                    Service worker: caché y uso sin conexión
+tools/generate-icons.mjs Genera los íconos PNG sin dependencias
 serve.mjs                Servidor local de desarrollo (sin dependencias)
 css/
   styles.css             Tokens de diseño, base, layout móvil y preferencias de visualización
   components.css         Botones, tarjetas, banners, formularios, diálogo, gráficos…
   responsive.css         Tablet y escritorio (barra lateral)
 js/
-  app.js                 Arranque, rutas y delegación de eventos
+  app.js                 Arranque, rutas, delegación de eventos y registro del service worker
+  config.js              Enlaces públicos (repositorio y sugerencias)
+  sample-data.js         Datos de ejemplo (cargar y borrar)
+  import-export.js       Exportar e importar datos con validación
   router.js              Navegación por hash
   state.js               Estado único, migraciones y reinicio
   storage.js             Adaptador de LocalStorage (reemplazable)
@@ -73,7 +99,7 @@ js/
   progress.js            Estadísticas derivadas y hábitos
   utils/dates.js         Fechas locales sin errores de zona horaria
   utils/dom.js           Plantillas HTML con escape automático
-  views/                 home, week, plans, nutrition, progress, profile
+  views/                 home, week, plans, nutrition, progress, profile, onboarding
 data/
   categories.js          Categorías de actividad
   activity-templates.js  Plantillas semanales de ejemplo
