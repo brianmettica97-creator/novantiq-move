@@ -32,3 +32,15 @@ Se descargaron recortadas y comprimidas en formato WebP. No se usaron fotos de U
 | templates/running.webp | Venti Views | https://unsplash.com/photos/-UYedjT31zY |
 | templates/home.webp | Rahul Gupta | https://unsplash.com/photos/2rZ4nhCdQNc |
 | templates/multisport.webp | Tuvalum | https://unsplash.com/photos/FkFCGm4OcXA |
+| recipes/avena-banana-cacao.webp | Ella Olsson | https://unsplash.com/photos/3_qr5tJOIbs |
+| recipes/tostadas-palta-huevo.webp | Natallia Strok | https://unsplash.com/photos/Gem-Yi6p1BU |
+| recipes/yogur-granola.webp | Alisha Hieb | https://unsplash.com/photos/LzrMzmVWhJw |
+| recipes/licuado-frutos-rojos.webp | Daniel Manta | https://unsplash.com/photos/6MUOCpV3kG8 |
+| recipes/guiso-lentejas.webp | Holly Spangler | https://unsplash.com/photos/lrtfNWl3dsE |
+| recipes/bowl-arroz-pollo.webp | Xavier Chng | https://unsplash.com/photos/KwGoCJGwbCs |
+| recipes/tortilla-verduras.webp | Bakd&Raw by Karolin Baitinger | https://unsplash.com/photos/SCZP5rvZINk |
+| recipes/fideos-tomate.webp | Mandy Bourke | https://unsplash.com/photos/Htb3Neu9Tmg |
+| recipes/ensalada-garbanzos.webp | Bakd&Raw by Karolin Baitinger | https://unsplash.com/photos/kan1EDs7A2Y |
+| recipes/verduras-asadas.webp | Christina Rumpf | https://unsplash.com/photos/gUU4MF87Ipw |
+| recipes/sopa-verduras.webp | Elena Leya | https://unsplash.com/photos/RHLtemkEAaM |
+| recipes/hummus-bastones.webp | Riddhi K | https://unsplash.com/photos/enRLKyJLxrk |

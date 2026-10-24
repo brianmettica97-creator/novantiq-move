@@ -10,7 +10,8 @@ import * as homeView from './views/home.js';
 import * as weekView from './views/week.js';
 import * as profileView from './views/profile.js';
 import * as plansView from './views/plans.js';
-import { nutritionView, progressView } from './views/coming-soon.js';
+import * as nutritionView from './views/nutrition.js';
+import { progressView } from './views/coming-soon.js';
 
 const main = document.getElementById('main');
 

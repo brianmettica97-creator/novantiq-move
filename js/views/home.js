@@ -8,6 +8,7 @@ import { getNextActivity } from '../activities.js';
 import { getWeekSummary } from '../progress.js';
 import { getCategory } from '../../data/categories.js';
 import { TEMPLATES } from '../../data/activity-templates.js';
+import { MEAL_SLOTS, getMeal, getWeekMeals, describeMeal } from '../meals.js';
 
 export const title = 'Inicio';
 
@@ -152,16 +153,32 @@ function renderNextCard(next) {
 }
 
 function renderMealsCard(state) {
-  // El planificador de comidas llega en la Etapa 4; por ahora el estado siempre está vacío.
-  const plannedMeals = Object.values(state.mealPlan).reduce((n, day) => n + Object.keys(day).length, 0);
+  const todayIso = today();
+  const weekCount = getWeekMeals(state, startOfWeek(todayIso, state.profile.weekStart)).length;
+  const todayMeals = MEAL_SLOTS.map((slot) => ({ slot, entry: getMeal(state, todayIso, slot.id) })).filter((m) => m.entry);
+  const pendingShopping = state.shoppingList.filter((i) => !i.checked).length;
+
+  if (!weekCount) {
+    return html`
+      <a class="feature-card" href="#/nutricion">
+        <img class="feature-card__img" src="assets/images/sections/meals-preview.webp" alt="" loading="lazy" decoding="async">
+        <span class="feature-card__body">
+          <span class="feature-card__title"><strong>Comidas de la semana</strong> ${icon('arrow-right', 'icon--sm')}</span>
+          <span class="feature-card__text">Todavía no planificaste comidas. Elegí recetas para desayuno, almuerzo, merienda y cena.</span>
+        </span>
+      </a>`;
+  }
+
   return html`
-    <a class="feature-card" href="#/nutricion">
-      <img class="feature-card__img" src="assets/images/sections/meals-preview.webp" alt="" loading="lazy" decoding="async">
-      <span class="feature-card__body">
-        <span class="feature-card__title"><strong>Comidas de la semana</strong> <span class="badge badge--soon">Próximamente</span></span>
-        <span class="feature-card__text">${plannedMeals
-          ? `${plannedMeals} comidas planificadas.`
-          : 'Planificá desayunos, almuerzos, meriendas y cenas en un solo lugar.'}</span>
-      </span>
-    </a>`;
+    <section class="card">
+      <div class="card__header">
+        <h2 class="card__title">${icon('utensils')} Comidas</h2>
+        <a class="link-arrow" href="#/nutricion">Planificador ${icon('arrow-right', 'icon--sm')}</a>
+      </div>
+      <p class="card__text">${weekCount} ${weekCount === 1 ? 'comida planificada' : 'comidas planificadas'} esta semana${pendingShopping ? ` · ${pendingShopping} ${pendingShopping === 1 ? 'producto' : 'productos'} por comprar` : ''}.</p>
+      ${todayMeals.length
+        ? html`<ul class="today-meals">${todayMeals.map(({ slot, entry }) => html`
+            <li><span class="today-meals__slot">${slot.label}</span> <span>${describeMeal(entry)}</span></li>`)}</ul>`
+        : html`<p class="card__text">Hoy no tenés comidas planificadas.</p>`}
+    </section>`;
 }

@@ -20,8 +20,9 @@ function createInitialState() {
     },
     activities: [],          // actividades programadas (copias propias del usuario)
     templateApplications: [], // registro de plantillas aplicadas (Etapa 3)
-    mealPlan: {},             // { 'YYYY-MM-DD': { breakfast, lunch, snack, dinner, extra } } (Etapa 4)
-    shoppingList: [],         // (Etapa 4)
+    mealPlan: {},             // { 'YYYY-MM-DD': { breakfast, lunch, snack, dinner, extra } }
+    shoppingList: [],         // [{ id, name, quantity, checked, recipeId, ingredientId, createdAt }]
+    nutritionPrefs: { goals: [] }, // preferencias generales; nunca activan dietas ni restricciones
     habitLogs: [],            // (Etapa 5)
   };
 }
@@ -43,6 +44,9 @@ function migrate(saved) {
     ...saved,
     profile: { ...base.profile, ...saved.profile },
     activities: Array.isArray(saved.activities) ? saved.activities : [],
+    shoppingList: Array.isArray(saved.shoppingList) ? saved.shoppingList : [],
+    mealPlan: saved.mealPlan && typeof saved.mealPlan === 'object' ? saved.mealPlan : {},
+    nutritionPrefs: { ...base.nutritionPrefs, ...saved.nutritionPrefs },
     schemaVersion: SCHEMA_VERSION,
   };
 }

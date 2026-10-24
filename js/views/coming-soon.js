@@ -26,25 +26,6 @@ function comingSoonView({ title, banner, intro, items, notice }) {
   };
 }
 
-export const nutritionView = comingSoonView({
-  title: 'Nutrición',
-  banner: {
-    eyebrow: 'Nutrición',
-    title: 'Tu alimentación, organizada',
-    text: 'Planificá tus comidas, encontrá recetas simples y armá tu lista de compras.',
-    image: 'assets/images/sections/nutrition.webp',
-    alt: 'Recipientes de vidrio con comidas preparadas: arroz, verduras y legumbres',
-  },
-  intro: 'Un espacio independiente para organizar la alimentación de la semana.',
-  items: [
-    'Planificador de desayuno, almuerzo, merienda, cena y colaciones.',
-    'Biblioteca de recetas con fotos, ingredientes, pasos y alérgenos indicados.',
-    'Lista de compras editable.',
-    'Preferencias generales: variedad, ahorro de tiempo, opciones vegetarianas o económicas.',
-  ],
-  notice: 'NOVANTIQ Move no genera dietas ni objetivos calóricos. Para un plan personalizado, consultá con un/a nutricionista.',
-});
-
 export const progressView = comingSoonView({
   title: 'Mi progreso',
   banner: {

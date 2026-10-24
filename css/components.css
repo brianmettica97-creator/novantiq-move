@@ -592,3 +592,144 @@ textarea.field__input { min-height: 96px; resize: vertical; }
 .session[data-rest="true"] .session__icon { color: var(--text-muted); }
 
 .apply-form { padding-top: var(--space-4); border-top: 1px solid var(--border); }
+
+/* ==========================================================================
+   Etapa 4 · nutrición
+   ========================================================================== */
+
+/* Pestañas */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  position: sticky;
+  top: calc(var(--topbar-h) + var(--space-2));
+  z-index: 10;
+}
+.tabs__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--tap);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  min-width: 0;
+}
+.tabs__btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tabs__btn:hover { color: var(--text); }
+.tabs__btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.tabs__count {
+  display: grid;
+  place-items: center;
+  min-width: 18px; height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  color: var(--text);
+  font-size: 0.6875rem;
+}
+.tabs__btn[aria-pressed="true"] .tabs__count { background: var(--accent-ink); color: var(--accent); }
+
+/* Comidas del planificador */
+.meal-slots { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.meal-slot { display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: var(--space-2); }
+.meal-slot__label { color: var(--text-faint); font-size: var(--fs-xs); font-weight: 650; }
+.meal-slot__btn,
+.meal-slot__add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  font-size: var(--fs-sm);
+}
+.meal-slot__btn { background: var(--surface-3); border: 1px solid transparent; }
+.meal-slot__btn:hover { border-color: var(--border-strong); }
+.meal-slot__add {
+  justify-content: center;
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-faint);
+}
+.meal-slot__add:hover { color: var(--accent); border-color: var(--accent); }
+.meal-slot__img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.meal-slot__note-icon { display: grid; place-items: center; width: 36px; height: 36px; color: var(--text-muted); flex-shrink: 0; }
+.meal-slot__name { overflow-wrap: anywhere; font-weight: 600; }
+.meal-extra { margin-top: var(--space-2); }
+
+.choice { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); border: 0; padding: 0; margin: 0; }
+.choice legend { margin-bottom: var(--space-2); }
+.choice__item, .check-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  cursor: pointer;
+}
+.choice__item input, .check-field input { width: 20px; height: 20px; accent-color: var(--accent); flex-shrink: 0; }
+.check-field small { display: block; color: var(--text-faint); font-size: var(--fs-xs); }
+.check-field input:disabled + span { color: var(--text-faint); cursor: not-allowed; }
+.check-group { display: grid; gap: var(--space-1); border: 0; padding: 0; margin: 0; }
+.check-group legend { margin-bottom: var(--space-2); }
+
+.dialog__footer--split { justify-content: space-between; align-items: center; flex-wrap: wrap; }
+
+/* Recetas */
+.filters--3 { margin-bottom: var(--space-2); }
+.allergen-line { color: var(--text-faint); font-size: var(--fs-xs); }
+.allergens__list { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2); }
+.detail__subtitle-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-2); }
+.detail__subtitle-row .detail__subtitle { margin-bottom: 0; }
+.ingredient-list { display: grid; gap: var(--space-1); }
+.ingredient {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-sm);
+}
+.ingredient__amount { color: var(--text-muted); }
+.steps { display: grid; gap: var(--space-2); padding-left: var(--space-5); list-style: decimal; color: var(--text-muted); }
+.steps li::marker { color: var(--accent); font-weight: 700; }
+
+/* Lista de compras */
+.shop-form { grid-template-columns: 1fr; align-items: end; }
+.shop-hint { margin-top: var(--space-3); }
+.shop-list { display: grid; gap: var(--space-1); }
+.shop-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-left: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.shop-item__label { display: flex; align-items: center; gap: var(--space-3); flex: 1; min-height: 52px; cursor: pointer; min-width: 0; }
+.shop-item__label input { width: 22px; height: 22px; accent-color: var(--accent); flex-shrink: 0; }
+.shop-item__name { font-weight: 600; overflow-wrap: anywhere; }
+.shop-item__qty { color: var(--text-muted); margin-left: var(--space-2); }
+.shop-item__source { display: block; color: var(--text-faint); font-size: var(--fs-xs); }
+.shop-item[data-checked="true"] .shop-item__name { color: var(--text-muted); text-decoration: line-through; }
+
+/* Comidas de hoy (inicio) */
+.today-meals { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.today-meals li { display: flex; gap: var(--space-3); padding: var(--space-2) var(--space-3); background: var(--surface-2); border-radius: var(--radius-sm); font-size: var(--fs-sm); }
+.today-meals__slot { color: var(--text-faint); min-width: 72px; font-weight: 650; }
+.allergens__warnings { display: grid; gap: var(--space-1); margin-bottom: var(--space-2); color: var(--warning); font-size: var(--fs-sm); }
+.allergens__warnings li { display: flex; gap: var(--space-2); align-items: flex-start; }
+.allergens__warnings .icon { margin-top: 3px; }

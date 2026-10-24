@@ -108,3 +108,19 @@
   .template-grid { grid-template-columns: repeat(3, 1fr); }
   .filters { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
+
+/* ---------- Etapa 4 ---------- */
+@media (min-width: 640px) {
+  .shop-form { grid-template-columns: 2fr 1fr auto; }
+  .shop-form .btn { margin-bottom: 22px; } /* alinea con los campos (espacio del mensaje de error) */
+  .filters--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .tabs { top: var(--space-4); max-width: 640px; }
+  .filters--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+/* En celulares las pestañas pasan a una grilla de 2×2 para que los textos entren completos */
+@media (max-width: 479px) {
+  .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: var(--radius); position: static; }
+  .tabs__btn { border-radius: var(--radius-sm); font-size: var(--fs-sm); }
+}
