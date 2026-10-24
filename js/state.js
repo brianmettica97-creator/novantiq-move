@@ -16,15 +16,26 @@ function createInitialState() {
     schemaVersion: SCHEMA_VERSION,
     profile: {
       displayName: '',
-      weekStart: 'monday',
+      weekStart: 'monday',        // 'monday' | 'sunday'
+      favoriteActivities: [],     // ids de categorías: aparecen primero al crear actividades
+      display: { largeText: false, reduceMotion: false },
     },
     activities: [],          // actividades programadas (copias propias del usuario)
-    templateApplications: [], // registro de plantillas aplicadas (Etapa 3)
+    templateApplications: [], // [{ id, templateId, weekStart, appliedAt }]
     mealPlan: {},             // { 'YYYY-MM-DD': { breakfast, lunch, snack, dinner, extra } }
     shoppingList: [],         // [{ id, name, quantity, checked, recipeId, ingredientId, createdAt }]
     nutritionPrefs: { goals: [] }, // preferencias generales; nunca activan dietas ni restricciones
-    habitLogs: [],            // (Etapa 5)
+    habits: [],               // hábitos opcionales definidos por el usuario
+    habitLogs: [],            // [{ id, habitId, date }]
   };
+}
+
+/** Vuelve al estado inicial y borra lo guardado (opción "Borrar mis datos" del perfil). */
+export async function resetState() {
+  const result = await adapter.clear();
+  state = createInitialState();
+  listeners.forEach((listener) => listener(state));
+  return result;
 }
 
 let state = createInitialState();
@@ -42,11 +53,13 @@ function migrate(saved) {
   return {
     ...base,
     ...saved,
-    profile: { ...base.profile, ...saved.profile },
+    profile: { ...base.profile, ...saved.profile, display: { ...base.profile.display, ...saved.profile?.display } },
     activities: Array.isArray(saved.activities) ? saved.activities : [],
     shoppingList: Array.isArray(saved.shoppingList) ? saved.shoppingList : [],
     mealPlan: saved.mealPlan && typeof saved.mealPlan === 'object' ? saved.mealPlan : {},
     nutritionPrefs: { ...base.nutritionPrefs, ...saved.nutritionPrefs },
+    habits: Array.isArray(saved.habits) ? saved.habits : [],
+    habitLogs: Array.isArray(saved.habitLogs) ? saved.habitLogs : [],
     schemaVersion: SCHEMA_VERSION,
   };
 }

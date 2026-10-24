@@ -2,11 +2,11 @@
 // para crear, editar, mover, completar y eliminar.
 
 import { html, icon } from '../utils/dom.js';
-import { sectionBanner, openDialog, closeDialog, confirmDialog, toast, showFieldErrors, requestRender } from '../ui.js';
-import { getState } from '../state.js';
 import {
-  today, startOfWeek, addDays, weekDays, weeksBetween, formatRange, formatWeekday, formatDayNumber, formatLongDate,
-} from '../utils/dates.js';
+  sectionBanner, openDialog, closeDialog, confirmDialog, toast, showFieldErrors, requestRender, weekNavigator, stepWeek,
+} from '../ui.js';
+import { getState } from '../state.js';
+import { today, startOfWeek, weekDays, formatWeekday, formatDayNumber, formatLongDate } from '../utils/dates.js';
 import {
   createActivity, updateActivity, deleteActivity, moveActivity, toggleCompleted, toggleTask,
   getActivity, getActivitiesForDate, isRest, INTENSITIES, LIMITS, STATUS_LABELS,
@@ -51,20 +51,13 @@ export function render(state) {
         alt: 'Agenda abierta junto a una taza de café',
       })}
 
-      <div class="week-toolbar">
-        <div class="week-nav" role="group" aria-label="Cambiar de semana">
-          <button type="button" class="btn btn--secondary btn--icon" id="week-prev" data-action="week-prev" aria-label="Semana anterior">${icon('chevron-left')}</button>
-          <h2 class="week-nav__label" aria-live="polite">
-            <span class="week-nav__eyebrow">${weekLabel(weeksBetween(currentWeekStart(state), weekStart))}</span>
-            ${formatRange(days[0], days[6])}
-          </h2>
-          <button type="button" class="btn btn--secondary btn--icon" id="week-next" data-action="week-next" aria-label="Semana siguiente">${icon('chevron-right')}</button>
-        </div>
-        <div class="btn-row">
-          ${isCurrentWeek ? '' : html`<button type="button" class="btn btn--ghost" data-action="week-today">Volver a hoy</button>`}
-          <button type="button" class="btn btn--primary" data-action="add-activity" data-date="${isCurrentWeek ? todayIso : days[0]}">${icon('plus')} Agregar actividad</button>
-        </div>
-      </div>
+      ${weekNavigator({
+        idPrefix: 'week',
+        action: 'week-step',
+        weekStart,
+        currentWeekStart: currentWeekStart(state),
+        extra: html`<button type="button" class="btn btn--primary" data-action="add-activity" data-date="${isCurrentWeek ? todayIso : days[0]}">${icon('plus')} Agregar actividad</button>`,
+      })}
 
       ${applications.length ? html`
         <section class="applied" aria-label="Plantillas aplicadas en esta semana">
@@ -82,13 +75,6 @@ export function render(state) {
       </ol>
     </div>
   `;
-}
-
-function weekLabel(offset) {
-  if (offset === 0) return 'Semana actual';
-  if (offset === 1) return 'Próxima semana';
-  if (offset === -1) return 'Semana pasada';
-  return offset > 0 ? `En ${offset} semanas` : `Hace ${-offset} semanas`;
 }
 
 function renderDay(state, date, isToday) {
@@ -148,9 +134,12 @@ export function renderActivityRow(activity) {
 }
 
 export const actions = {
-  'week-prev': () => { shownWeekStart = addDays(getShownWeekStart(getState()), -7); requestRender(); },
-  'week-next': () => { shownWeekStart = addDays(getShownWeekStart(getState()), 7); requestRender(); },
-  'week-today': () => { shownWeekStart = null; requestRender(); document.getElementById('week-next')?.focus(); },
+  'week-step': (button) => {
+    const step = Number(button.dataset.step);
+    shownWeekStart = stepWeek(getShownWeekStart(getState()), step);
+    requestRender();
+    if (step === 0) document.getElementById('week-next')?.focus(); // "Volver a hoy" desaparece
+  },
   'remove-application': async (button) => {
     const state = getState();
     const application = state.templateApplications.find((a) => a.id === button.dataset.id);
@@ -340,6 +329,11 @@ export function openActivityForm({ date = today(), activity = null } = {}) {
   const editing = Boolean(activity);
   const values = activity ?? { name: '', category: '', date, time: '', durationMin: '', intensity: '', description: '', notes: '', tasks: [] };
   const selected = (current, value) => (current === value ? 'selected' : '');
+  // Las actividades favoritas del perfil aparecen primero
+  const favoriteIds = getState().profile.favoriteActivities;
+  const favorites = CATEGORIES.filter((c) => favoriteIds.includes(c.id));
+  const others = CATEGORIES.filter((c) => !favoriteIds.includes(c.id));
+  const categoryOption = (c) => html`<option value="${c.id}" ${selected(values.category, c.id)}>${c.label}</option>`;
 
   openDialog({
     title: editing ? 'Editar actividad' : 'Nueva actividad',
@@ -356,7 +350,10 @@ export function openActivityForm({ date = today(), activity = null } = {}) {
           <label class="field__label" for="f-category">Categoría</label>
           <select class="field__input" id="f-category" name="category" required aria-describedby="error-category">
             <option value="">Elegí una categoría</option>
-            ${CATEGORIES.map((c) => html`<option value="${c.id}" ${selected(values.category, c.id)}>${c.label}</option>`)}
+            ${favorites.length ? html`
+              <optgroup label="Tus favoritas">${favorites.map(categoryOption)}</optgroup>
+              <optgroup label="Otras">${others.map(categoryOption)}</optgroup>`
+              : CATEGORIES.map(categoryOption)}
           </select>
           <p class="field__error" id="error-category"></p>
         </div>

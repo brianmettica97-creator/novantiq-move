@@ -124,3 +124,21 @@
   .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: var(--radius); position: static; }
   .tabs__btn { border-radius: var(--radius-sm); font-size: var(--fs-sm); }
 }
+
+/* ---------- Etapa 5 ---------- */
+@media (min-width: 640px) {
+  .stats--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .habit-form { grid-template-columns: 1fr auto; align-items: start; }
+  .habit-form .btn { margin-top: 28px; } /* alinea con el campo (debajo de la etiqueta) */
+  .fav-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .progress-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+  .columns { height: 240px; }
+  .fav-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+/* Historial en celulares: una etiqueta de fecha cada dos columnas para que no se pisen
+   (la fecha completa sigue en el tooltip y en "Ver como tabla") */
+@media (max-width: 639px) {
+  .column:nth-child(odd) .column__label { visibility: hidden; }
+}

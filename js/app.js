@@ -11,7 +11,7 @@ import * as weekView from './views/week.js';
 import * as profileView from './views/profile.js';
 import * as plansView from './views/plans.js';
 import * as nutritionView from './views/nutrition.js';
-import { progressView } from './views/coming-soon.js';
+import * as progressView from './views/progress.js';
 
 const main = document.getElementById('main');
 
@@ -94,11 +94,20 @@ main.addEventListener('submit', (event) => {
   handler(event.target);
 });
 
+/** Aplica las preferencias de visualización del perfil al documento (ver responsive.css). */
+function applyDisplayPrefs(state) {
+  const { largeText, reduceMotion } = state.profile.display;
+  document.documentElement.toggleAttribute('data-large-text', largeText);
+  document.documentElement.toggleAttribute('data-reduce-motion', reduceMotion);
+}
+
 async function start() {
   const result = await initState();
   if (!result.ok) toast(storageErrorMessage(result.reason), { type: 'error', duration: 8000 });
 
   setStorageErrorHandler((error) => toast(storageErrorMessage(error.reason), { type: 'error', duration: 8000 }));
+  applyDisplayPrefs(getState());
+  subscribe(applyDisplayPrefs);
   subscribe(refresh);
 
   createRouter(routes, { fallback: 'inicio', onChange: showRoute }).start();

@@ -1,9 +1,11 @@
 // Vista "Nutrición": planificador de comidas, recetas, lista de compras y preferencias.
 
 import { html, icon } from '../utils/dom.js';
-import { sectionBanner, emptyState, openDialog, closeDialog, confirmDialog, toast, showFieldErrors, requestRender } from '../ui.js';
+import {
+  sectionBanner, emptyState, openDialog, closeDialog, confirmDialog, toast, showFieldErrors, requestRender, weekNavigator, stepWeek,
+} from '../ui.js';
 import { getState } from '../state.js';
-import { today, startOfWeek, addDays, weekDays, weeksBetween, formatRange, formatWeekday, formatDayNumber, formatLongDate } from '../utils/dates.js';
+import { today, startOfWeek, addDays, weekDays, formatRange, formatWeekday, formatDayNumber, formatLongDate } from '../utils/dates.js';
 import { MEAL_SLOTS, NOTE_MAX, getMeal, setMeal, removeMeal, describeMeal, getWeekMeals, copyWeek, countCopyConflicts } from '../meals.js';
 import {
   getRecipe, getRecipeIngredients, getRecipeAllergens, getRecipeWarnings, filterRecipes, getRecipePreferenceTests,
@@ -74,25 +76,17 @@ export function render(state) {
 function renderPlanner(state) {
   const weekStart = shownWeek(state);
   const days = weekDays(weekStart);
-  const offset = weeksBetween(currentWeek(state), weekStart);
   const planned = getWeekMeals(state, weekStart).length;
   const todayIso = today();
 
   return html`
-    <div class="week-toolbar">
-      <div class="week-nav" role="group" aria-label="Cambiar de semana">
-        <button type="button" class="btn btn--secondary btn--icon" id="meal-week-prev" data-action="meal-week" data-step="-1" aria-label="Semana anterior">${icon('chevron-left')}</button>
-        <h2 class="week-nav__label" aria-live="polite">
-          <span class="week-nav__eyebrow">${offset === 0 ? 'Semana actual' : offset === 1 ? 'Próxima semana' : offset === -1 ? 'Semana pasada' : offset > 0 ? `En ${offset} semanas` : `Hace ${-offset} semanas`}</span>
-          ${formatRange(days[0], days[6])}
-        </h2>
-        <button type="button" class="btn btn--secondary btn--icon" id="meal-week-next" data-action="meal-week" data-step="1" aria-label="Semana siguiente">${icon('chevron-right')}</button>
-      </div>
-      <div class="btn-row">
-        ${offset === 0 ? '' : html`<button type="button" class="btn btn--ghost" data-action="meal-week" data-step="0">Volver a hoy</button>`}
-        ${planned ? html`<button type="button" class="btn btn--secondary" id="copy-week" data-action="copy-week">${icon('repeat', 'icon--sm')} Copiar semana</button>` : ''}
-      </div>
-    </div>
+    ${weekNavigator({
+      idPrefix: 'meal-week',
+      action: 'meal-week',
+      weekStart,
+      currentWeekStart: currentWeek(state),
+      extra: planned ? html`<button type="button" class="btn btn--secondary" id="copy-week" data-action="copy-week">${icon('repeat', 'icon--sm')} Copiar semana</button>` : '',
+    })}
 
     ${planned ? '' : html`<section class="card">${emptyState({
       iconName: 'utensils',
@@ -547,8 +541,9 @@ export const actions = {
   },
   'meal-week': (button) => {
     const step = Number(button.dataset.step);
-    plannerWeek = step === 0 ? null : addDays(shownWeek(getState()), step * 7);
+    plannerWeek = stepWeek(shownWeek(getState()), step);
     requestRender();
+    if (step === 0) document.getElementById('meal-week-next')?.focus();
   },
   'edit-meal': (button) => openMealEditor(button.dataset.date, button.dataset.slot),
   'copy-week': () => openCopyWeek(),

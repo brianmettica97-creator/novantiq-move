@@ -1,6 +1,7 @@
 // Componentes de interfaz compartidos: diálogo, avisos breves y piezas visuales repetidas.
 
 import { html, icon, render } from './utils/dom.js';
+import { addDays, formatRange, relativeWeekLabel, weeksBetween } from './utils/dates.js';
 
 // ---------- Diálogo ----------
 // Usamos el elemento nativo <dialog>: ya resuelve el foco atrapado, la tecla Escape
@@ -119,6 +120,35 @@ export function sectionBanner({ eyebrow, title, text, image, alt = '' }) {
       </div>
     </section>
   `;
+}
+
+/**
+ * Barra para cambiar de semana (usada en Mi semana, Nutrición y Progreso).
+ * Los botones disparan `action` con data-step = -1 | 1 | 0 (0 = volver a la semana actual).
+ * `extra` permite sumar botones propios de cada vista a la derecha.
+ */
+export function weekNavigator({ idPrefix, action, weekStart, currentWeekStart, extra = '' }) {
+  const offset = weeksBetween(currentWeekStart, weekStart);
+  return html`
+    <div class="week-toolbar">
+      <div class="week-nav" role="group" aria-label="Cambiar de semana">
+        <button type="button" class="btn btn--secondary btn--icon" id="${idPrefix}-prev" data-action="${action}" data-step="-1" aria-label="Semana anterior">${icon('chevron-left')}</button>
+        <h2 class="week-nav__label" aria-live="polite">
+          <span class="week-nav__eyebrow">${relativeWeekLabel(offset)}</span>
+          ${formatRange(weekStart, addDays(weekStart, 6))}
+        </h2>
+        <button type="button" class="btn btn--secondary btn--icon" id="${idPrefix}-next" data-action="${action}" data-step="1" aria-label="Semana siguiente">${icon('chevron-right')}</button>
+      </div>
+      <div class="btn-row">
+        ${offset === 0 ? '' : html`<button type="button" class="btn btn--ghost" id="${idPrefix}-today" data-action="${action}" data-step="0">Volver a hoy</button>`}
+        ${extra}
+      </div>
+    </div>`;
+}
+
+/** Calcula la semana a mostrar después de tocar un botón de weekNavigator. null = semana actual. */
+export function stepWeek(weekStart, step) {
+  return step === 0 ? null : addDays(weekStart, step * 7);
 }
 
 /** Estado vacío con icono, texto y acciones opcionales. */

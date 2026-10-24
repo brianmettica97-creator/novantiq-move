@@ -10,7 +10,7 @@
 import { setState, createId } from './state.js';
 import { buildActivity, isRest } from './activities.js';
 import { TEMPLATES } from '../data/activity-templates.js';
-import { addDays, startOfWeek, weekDays } from './utils/dates.js';
+import { addDays, parseISODate, weekDays } from './utils/dates.js';
 
 export function getTemplate(id) {
   return TEMPLATES.find((t) => t.id === id) ?? null;
@@ -48,9 +48,14 @@ export function filterTemplates({ activity = '', level = '', duration = '', goal
   });
 }
 
-/** Fecha de cada sesión: las plantillas usan lunes = 0. */
+/**
+ * Fecha de cada sesión. Las plantillas usan lunes = 0 … domingo = 6.
+ * Si la semana empieza el domingo, el domingo de la plantilla cae al principio
+ * de esa misma semana, para que todas las sesiones queden dentro de la semana elegida.
+ */
 function sessionDate(weekStartIso, day) {
-  return addDays(startOfWeek(weekStartIso, 'monday'), day);
+  const startsOnSunday = parseISODate(weekStartIso).getDay() === 0;
+  return addDays(weekStartIso, startsOnSunday ? (day + 1) % 7 : day);
 }
 
 /**
@@ -130,8 +135,12 @@ export function removeTemplateApplication(applicationId) {
 }
 
 export function getApplicationsForWeek(state, weekStartIso) {
+  // Coincidencia por superposición: si la persona cambia el inicio de semana (lunes/domingo),
+  // las plantillas aplicadas antes siguen apareciendo en la semana que las contiene.
+  const from = addDays(weekStartIso, -6);
+  const to = addDays(weekStartIso, 6);
   return state.templateApplications
-    .filter((a) => a.weekStart === weekStartIso)
+    .filter((a) => a.weekStart >= from && a.weekStart <= to)
     .map((application) => ({ application, template: getTemplate(application.templateId) }))
     .filter(({ template }) => template); // ignora plantillas que ya no existan en los datos
 }

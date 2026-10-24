@@ -63,6 +63,14 @@ export function weeksBetween(fromIso, toIso) {
 
 // ---------- Formato para mostrar ----------
 
+/** "Semana actual", "Próxima semana", "Hace 3 semanas"… a partir de la diferencia en semanas. */
+export function relativeWeekLabel(offset) {
+  if (offset === 0) return 'Semana actual';
+  if (offset === 1) return 'Próxima semana';
+  if (offset === -1) return 'Semana pasada';
+  return offset > 0 ? `En ${offset} semanas` : `Hace ${-offset} semanas`;
+}
+
 export function formatLongDate(iso) {
   return parseISODate(iso).toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long' });
 }
@@ -75,12 +83,14 @@ export function formatDayNumber(iso) {
   return parseISODate(iso).getDate();
 }
 
+/** "26 oct" */
+export function formatShortDate(iso) {
+  return parseISODate(iso).toLocaleDateString(LOCALE, { day: 'numeric', month: 'short' }).replace('.', '');
+}
+
 /** "26 oct – 1 nov" */
 export function formatRange(fromIso, toIso) {
-  const opts = { day: 'numeric', month: 'short' };
-  const from = parseISODate(fromIso).toLocaleDateString(LOCALE, opts).replace('.', '');
-  const to = parseISODate(toIso).toLocaleDateString(LOCALE, opts).replace('.', '');
-  return `${from} – ${to}`;
+  return `${formatShortDate(fromIso)} – ${formatShortDate(toIso)}`;
 }
 
 /** "Hoy", "Mañana" o el día de la semana con fecha. */

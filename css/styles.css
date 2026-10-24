@@ -13,11 +13,12 @@
   --surface-3: #252a2e;
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.16);
+  --track: #5c656c; /* pista de medidores y gráficos: 3:1 con la tarjeta y 4.6:1 con el acento (WCAG 1.4.11) */
 
   /* Texto */
   --text: #f2f4f3;
   --text-muted: #a7aeaa;
-  --text-faint: #7d8581;
+  --text-faint: #8d9591; /* 4.5:1 o más sobre todas las superficies */
 
   /* Acento y estados */
   --accent: #c6f432;
@@ -255,6 +256,7 @@ button { cursor: pointer; }
   to { opacity: 1; transform: none; }
 }
 
+/* Movimiento reducido: preferencia del sistema o del perfil (Mi perfil → Visualización) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -263,3 +265,15 @@ button { cursor: pointer; }
     scroll-behavior: auto !important;
   }
 }
+
+[data-reduce-motion] *,
+[data-reduce-motion] *::before,
+[data-reduce-motion] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Texto más grande: todo el sistema usa rem, así que escala junto */
+html[data-large-text] { font-size: 112.5%; }
