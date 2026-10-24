@@ -1,0 +1,265 @@
+/* ==========================================================================
+   NOVANTIQ Move · styles.css
+   Tokens de diseño, estilos base y layout general (mobile first).
+   Componentes en components.css · adaptaciones de pantalla en responsive.css
+   ========================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  /* Superficies */
+  --bg: #0b0c0d;
+  --surface: #141618;
+  --surface-2: #1c1f22;
+  --surface-3: #252a2e;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Texto */
+  --text: #f2f4f3;
+  --text-muted: #a7aeaa;
+  --text-faint: #7d8581;
+
+  /* Acento y estados */
+  --accent: #c6f432;
+  --accent-hover: #d6ff52;
+  --accent-ink: #0b0c0d;
+  --accent-soft: rgba(198, 244, 50, 0.12);
+  --success: #c6f432;
+  --warning: #ffc857;
+  --warning-soft: rgba(255, 200, 87, 0.14);
+  --danger: #ff7a7a;
+  --danger-soft: rgba(255, 122, 122, 0.14);
+
+  /* Tipografía (fuentes del sistema: sin descargas externas) */
+  --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Roboto, Arial, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Roboto, Arial, sans-serif;
+  --fs-xs: 0.8125rem;   /* 13px: mínimo para textos secundarios */
+  --fs-sm: 0.9375rem;   /* 15px */
+  --fs-md: 1rem;        /* 16px */
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.625rem;
+  --fs-2xl: clamp(1.75rem, 5vw, 2.5rem);
+
+  /* Espaciado, radios y sombras */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+  /* Layout */
+  --gutter: 16px;
+  --topbar-h: 60px;
+  --bottomnav-h: 68px;
+  --content-max: 1120px;
+  --tap: 44px; /* tamaño mínimo de objetivo táctil */
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+
+  color-scheme: dark;
+}
+
+/* ---------- 2. Base ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+/* Iconos del sprite: heredan el color del texto */
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon--sm { width: 1rem; height: 1rem; }
+.icon--lg { width: 1.75rem; height: 1.75rem; }
+
+/* Foco visible y consistente para navegación con teclado */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+/* Títulos que reciben foco por código al navegar: sin recuadro (no son controles) */
+.main:focus,
+[tabindex="-1"]:focus { outline: none; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  z-index: 100;
+  padding: var(--space-3) var(--space-4);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+.skip-link:focus { top: var(--space-3); }
+
+.noscript { padding: var(--space-5); text-align: center; }
+
+/* ---------- 3. Layout (móvil) ---------- */
+.app-shell { min-height: 100dvh; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--topbar-h);
+  padding: 0 var(--gutter);
+  padding-top: env(safe-area-inset-top);
+  background: rgba(11, 12, 13, 0.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.06em;
+  min-height: var(--tap);
+}
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.brand__text { color: var(--text-muted); }
+.brand__text strong { color: var(--text); font-weight: 700; }
+
+.topbar__profile {
+  display: grid;
+  place-items: center;
+  width: var(--tap); height: var(--tap);
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.topbar__profile[aria-current="page"] { color: var(--accent); border-color: var(--accent); }
+
+/* Navegación inferior: pensada para usar con el pulgar */
+.nav {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 30;
+  background: rgba(20, 22, 24, 0.94);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav .brand--nav,
+.nav__note,
+.nav__item--desktop { display: none; }
+
+.nav__list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: var(--bottomnav-h);
+}
+.nav__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  color: var(--text-faint);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  position: relative;
+  transition: color var(--dur) var(--ease);
+}
+.nav__link .icon { width: 1.4rem; height: 1.4rem; }
+.nav__link:hover { color: var(--text); }
+.nav__link[aria-current="page"] { color: var(--accent); }
+.nav__link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 28px; height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--accent);
+}
+
+.main {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-4) var(--gutter) calc(var(--bottomnav-h) + var(--space-6) + env(safe-area-inset-bottom));
+}
+
+/* Animación de entrada de cada vista (se desactiva con movimiento reducido) */
+.view { animation: view-in 260ms var(--ease); }
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

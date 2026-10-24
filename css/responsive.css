@@ -1,0 +1,95 @@
+/* ==========================================================================
+   NOVANTIQ Move · responsive.css
+   La base está pensada para móvil; acá se adapta a pantallas más grandes.
+   ========================================================================== */
+
+/* Celulares muy angostos */
+@media (max-width: 360px) {
+  .form-row { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .nav__link { font-size: 0.6875rem; }
+}
+
+/* Tablets */
+@media (min-width: 640px) {
+  :root { --gutter: 24px; }
+
+  .hero__content { min-height: 320px; padding: var(--space-6); }
+  .banner__content { min-height: 200px; padding: var(--space-6); }
+
+  .grid--2 { grid-template-columns: 1fr 1fr; }
+  .feature-card { grid-template-columns: 132px 1fr; }
+}
+
+/* Escritorio: la navegación pasa a ser una barra lateral */
+@media (min-width: 1024px) {
+  :root { --sidebar-w: 248px; }
+
+  .topbar { display: none; }
+
+  .nav {
+    inset: 0 auto 0 0;
+    width: var(--sidebar-w);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-4);
+    border-top: 0;
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .nav .brand--nav { display: inline-flex; padding: 0 var(--space-2); }
+  .nav__item--desktop { display: block; }
+  .nav__note {
+    display: block;
+    margin-top: auto;
+    padding: var(--space-3);
+    color: var(--text-faint);
+    font-size: var(--fs-xs);
+    border-top: 1px solid var(--border);
+  }
+
+  .nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    height: auto;
+  }
+  .nav__link {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    min-height: 48px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+  }
+  .nav__link:hover { background: var(--surface-2); }
+  .nav__link[aria-current="page"] { background: var(--accent-soft); }
+  .nav__link[aria-current="page"]::before {
+    top: 12px; left: 0;
+    width: 3px; height: 24px;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .main {
+    max-width: none;
+    margin-left: var(--sidebar-w);
+    padding: var(--space-6) var(--space-6) var(--space-7);
+  }
+  /* Centra el contenido en el espacio que deja la barra lateral */
+  .main > .view { max-width: var(--content-max); margin-inline: auto; }
+
+  .toast-region { bottom: var(--space-5); left: calc(50% + var(--sidebar-w) / 2); }
+
+  /* Dashboard en dos columnas */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  .dashboard__hero { grid-column: 1 / -1; }
+
+  .day-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+}

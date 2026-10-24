@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="NOVANTIQ Move: organizá tu semana, mantené tus hábitos y seguí tu progreso en un solo lugar.">
+  <meta name="theme-color" content="#0b0c0d">
+  <title>NOVANTIQ Move</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="app-shell">
+    <!-- Barra superior (móvil) -->
+    <header class="topbar">
+      <a class="brand" href="#/inicio" aria-label="NOVANTIQ Move, ir al inicio">
+        <span class="brand__mark" aria-hidden="true">N</span>
+        <span class="brand__text">NOVANTIQ <strong>Move</strong></span>
+      </a>
+      <a class="topbar__profile" href="#/perfil" data-nav="perfil" aria-label="Mi perfil">
+        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#user"></use></svg>
+      </a>
+    </header>
+
+    <!-- Navegación principal: barra lateral en escritorio, barra inferior en móvil -->
+    <nav class="nav" aria-label="Principal">
+      <a class="brand brand--nav" href="#/inicio" aria-label="NOVANTIQ Move, ir al inicio">
+        <span class="brand__mark" aria-hidden="true">N</span>
+        <span class="brand__text">NOVANTIQ <strong>Move</strong></span>
+      </a>
+      <ul class="nav__list">
+        <li><a class="nav__link" href="#/inicio" data-nav="inicio">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#home"></use></svg>
+          <span>Inicio</span></a></li>
+        <li><a class="nav__link" href="#/semana" data-nav="semana">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#calendar"></use></svg>
+          <span>Semana</span></a></li>
+        <li><a class="nav__link" href="#/planes" data-nav="planes">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#layers"></use></svg>
+          <span>Planes</span></a></li>
+        <li><a class="nav__link" href="#/nutricion" data-nav="nutricion">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#utensils"></use></svg>
+          <span>Nutrición</span></a></li>
+        <li><a class="nav__link" href="#/progreso" data-nav="progreso">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#chart"></use></svg>
+          <span>Progreso</span></a></li>
+        <li class="nav__item--desktop"><a class="nav__link" href="#/perfil" data-nav="perfil">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#user"></use></svg>
+          <span>Perfil</span></a></li>
+      </ul>
+      <p class="nav__note">Tus datos se guardan solo en este navegador.</p>
+    </nav>
+
+    <main id="main" class="main" tabindex="-1"></main>
+  </div>
+
+  <!-- Diálogo reutilizable (formularios y confirmaciones) -->
+  <dialog id="app-dialog" class="dialog" aria-labelledby="app-dialog-title"></dialog>
+
+  <!-- Avisos breves -->
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+
+  <noscript><p class="noscript">NOVANTIQ Move necesita JavaScript para funcionar.</p></noscript>
+</body>
+</html>
