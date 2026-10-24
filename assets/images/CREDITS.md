@@ -26,3 +26,9 @@ Se descargaron recortadas y comprimidas en formato WebP. No se usaron fotos de U
 | activities/mobility.webp | Dane Wetton | https://unsplash.com/photos/t1NEMSm1rgI |
 | activities/other.webp | Brandy Urstadt | https://unsplash.com/photos/-WhdkWWvgxw |
 | activities/rest.webp | Vladislav Muslakov | https://unsplash.com/photos/CwIU33KGToc |
+| templates/general.webp | Timur Shakerzianov | https://unsplash.com/photos/G9Kb389ALFI |
+| templates/gym-intro.webp | Vitaly Gariev | https://unsplash.com/photos/-JWETyt2GdU |
+| templates/walking.webp | Jeffrey Grospe | https://unsplash.com/photos/6djTDnq4Svw |
+| templates/running.webp | Venti Views | https://unsplash.com/photos/-UYedjT31zY |
+| templates/home.webp | Rahul Gupta | https://unsplash.com/photos/2rZ4nhCdQNc |
+| templates/multisport.webp | Tuvalum | https://unsplash.com/photos/FkFCGm4OcXA |

@@ -21,7 +21,7 @@ y abrí <http://localhost:5173>. También sirve cualquier servidor estático (po
 |---|---|---|
 | 1 | Inspección y planificación | ✅ |
 | 2 | Interfaz principal, navegación, dashboard, estados vacíos, alta de actividades | ✅ |
-| 3 | Calendario completo, edición, completar, reprogramar, plantillas | Pendiente |
+| 3 | Calendario completo, edición, completar, reprogramar, plantillas | ✅ |
 | 4 | Nutrición: planificador, recetas, lista de compras, preferencias | Pendiente |
 | 5 | Progreso, perfil completo, accesibilidad y pulido final | Pendiente |
 
@@ -40,17 +40,28 @@ js/
   state.js            Estado único (fuente de verdad) y migraciones
   storage.js          Adaptador de LocalStorage (reemplazable por Supabase)
   ui.js               Diálogo, avisos, banner y estados vacíos
-  activities.js       Lógica de actividades (validar, crear, consultar)
+  activities.js       Lógica de actividades (crear, editar, mover, completar, eliminar)
+  templates.js        Filtrar, aplicar y quitar plantillas sin duplicar
   progress.js         Estadísticas derivadas de los registros reales
   utils/dates.js      Fechas locales "YYYY-MM-DD" sin errores de zona horaria
   utils/dom.js        Plantillas HTML con escape automático (anti-XSS)
   views/              Una vista por sección
 data/
   categories.js       Categorías de actividad
+  activity-templates.js  Plantillas semanales de ejemplo (solo lectura)
 assets/
   images/             Fotos WebP (ver images/CREDITS.md)
   icons/              Sprite SVG e ícono de la app
 ```
+
+## Cómo funcionan las plantillas
+
+- Las plantillas de `data/activity-templates.js` nunca se modifican.
+- Al aplicar una, se crean **copias** en tu semana con `templateId`, `applicationId` y `sessionKey`.
+- Aplicar la misma plantilla dos veces en la misma semana pide confirmación y **reemplaza** sus sesiones
+  pendientes; las completadas se conservan y no se duplican.
+- Si los días elegidos ya tienen actividades propias, se avisa antes de sumar las sesiones.
+- "Quitar plantilla" elimina sus sesiones no completadas; las completadas quedan en tu historial.
 
 ## Datos y privacidad
 

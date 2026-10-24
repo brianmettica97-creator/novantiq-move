@@ -434,3 +434,161 @@ textarea.field__input { min-height: 96px; resize: vertical; }
 }
 .toast .icon { color: var(--accent); }
 .toast--error .icon { color: var(--danger); }
+
+/* ==========================================================================
+   Etapa 3 · calendario, detalle y plantillas
+   ========================================================================== */
+
+/* ---------- Variantes de botón ---------- */
+.btn--sm { min-height: 36px; padding: 0 var(--space-3); font-size: var(--fs-xs); }
+.btn--danger { background: var(--danger); color: #1a0606; }
+.btn--danger:hover { background: #ff9494; }
+.btn--danger-text { color: var(--danger); }
+.btn--danger-text:hover { color: var(--danger); background: var(--danger-soft); }
+.card__actions { margin-top: var(--space-4); }
+
+.dialog__message { color: var(--text-muted); margin-bottom: var(--space-4); }
+
+/* ---------- Barra de la semana ---------- */
+.week-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.week-nav { display: flex; align-items: center; gap: var(--space-3); }
+.week-nav__label { display: flex; flex-direction: column; min-width: 150px; text-align: center; font-size: var(--fs-lg); }
+.week-nav__eyebrow { color: var(--accent); font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.applied { display: grid; gap: var(--space-2); }
+.applied__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: var(--fs-sm);
+}
+.applied__item .icon { color: var(--accent); }
+.applied__item span { flex: 1; min-width: 0; }
+
+/* Días con actividades se distinguen también por el borde, no solo por el contenido */
+.day[data-has-activities="true"] { background: linear-gradient(180deg, var(--surface-2), var(--surface)); }
+
+/* ---------- Filas de actividad (interactivas) ---------- */
+.check-btn {
+  display: grid;
+  place-items: center;
+  width: var(--tap); height: var(--tap);
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: var(--surface-3);
+  color: var(--text-muted);
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.check-btn:hover { border-color: var(--accent); color: var(--accent); }
+.check-btn:active { transform: scale(0.92); }
+.check-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.activity-row__name {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.activity-row__name:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.activity-row[data-status="completed"] .activity-row__name { color: var(--text-muted); text-decoration: line-through; }
+
+/* ---------- Detalle (actividades y plantillas) ---------- */
+.detail { display: grid; gap: var(--space-4); }
+.detail__img { width: 100%; height: auto; aspect-ratio: 16 / 8; object-fit: cover; border-radius: var(--radius); }
+.detail__head { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.detail__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+.detail__facts div { padding: var(--space-3); background: var(--surface-2); border-radius: var(--radius-sm); }
+.detail__facts dt { color: var(--text-faint); font-size: var(--fs-xs); }
+.detail__facts dd { margin: 0; font-weight: 600; text-transform: none; }
+.detail__note { display: flex; gap: var(--space-2); align-items: center; color: var(--text-muted); font-size: var(--fs-sm); }
+.detail__subtitle { font-size: var(--fs-md); margin-bottom: var(--space-2); display: flex; align-items: center; gap: var(--space-2); }
+.detail__count { color: var(--text-faint); font-weight: 500; font-size: var(--fs-sm); }
+.detail__text { color: var(--text-muted); white-space: pre-line; overflow-wrap: anywhere; }
+.detail__actions { display: grid; gap: var(--space-3); padding-top: var(--space-2); border-top: 1px solid var(--border); }
+.detail__secondary { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+.detail__secondary .btn { padding: 0 var(--space-2); }
+
+.task-list { display: grid; gap: var(--space-1); }
+.task {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.task input { width: 20px; height: 20px; accent-color: var(--accent); flex-shrink: 0; }
+.task input:checked + span { color: var(--text-muted); text-decoration: line-through; }
+
+/* ---------- Biblioteca de plantillas ---------- */
+.filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.results-count { color: var(--text-muted); font-size: var(--fs-sm); }
+
+.template-grid { display: grid; gap: var(--space-4); }
+.template-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.template-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.template-card__img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.template-card__body { display: flex; flex-direction: column; gap: var(--space-2); flex: 1; padding: var(--space-4); }
+.template-card__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.template-card__title { font-size: var(--fs-lg); }
+.template-card__text { color: var(--text-muted); font-size: var(--fs-sm); }
+.template-card__icons { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-bottom: var(--space-2); }
+.template-card .btn { margin-top: auto; }
+.mini-icon {
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: var(--surface-3);
+  color: var(--accent);
+}
+
+.session-list { display: grid; gap: var(--space-1); }
+.session {
+  display: grid;
+  grid-template-columns: 84px 20px 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-sm);
+}
+.session__day { color: var(--text-faint); font-weight: 600; }
+.session__icon { color: var(--accent); display: grid; }
+.session__min { color: var(--text-muted); }
+.session[data-rest="true"] { background: transparent; border: 1px dashed var(--border-strong); }
+.session[data-rest="true"] .session__icon { color: var(--text-muted); }
+
+.apply-form { padding-top: var(--space-4); border-top: 1px solid var(--border); }

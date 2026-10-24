@@ -93,3 +93,18 @@
 
   .day-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 }
+
+/* ---------- Etapa 3 ---------- */
+@media (max-width: 480px) {
+  .week-toolbar { flex-direction: column; align-items: stretch; }
+  .week-nav { justify-content: space-between; }
+  .week-toolbar .btn-row .btn { flex: 1; }
+}
+@media (min-width: 640px) {
+  .template-grid { grid-template-columns: repeat(2, 1fr); }
+  .filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .template-grid { grid-template-columns: repeat(3, 1fr); }
+  .filters { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}

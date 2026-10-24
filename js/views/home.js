@@ -7,6 +7,7 @@ import { today, startOfWeek, formatLongDate, formatWeekday, formatDayNumber, for
 import { getNextActivity } from '../activities.js';
 import { getWeekSummary } from '../progress.js';
 import { getCategory } from '../../data/categories.js';
+import { TEMPLATES } from '../../data/activity-templates.js';
 
 export const title = 'Inicio';
 
@@ -41,8 +42,8 @@ export function render(state) {
         <a class="feature-card" href="#/planes">
           <img class="feature-card__img" src="assets/images/sections/plans.webp" alt="" loading="lazy" decoding="async">
           <span class="feature-card__body">
-            <span class="feature-card__title"><strong>Planes y plantillas</strong> <span class="badge badge--soon">Próximamente</span></span>
-            <span class="feature-card__text">Semanas de ejemplo listas para sumar a tu planificación.</span>
+            <span class="feature-card__title"><strong>Planes y plantillas</strong> ${icon('arrow-right', 'icon--sm')}</span>
+            <span class="feature-card__text">${TEMPLATES.length} semanas de ejemplo listas para sumar a tu planificación.</span>
           </span>
         </a>
         <a class="feature-card" href="#/progreso">
@@ -142,6 +143,10 @@ function renderNextCard(next) {
           </p>
           <p class="meta"><span>${category.label}</span></p>
         </div>
+      </div>
+      <div class="btn-row card__actions">
+        <button type="button" class="btn btn--primary" id="check-${next.id}" data-action="toggle-complete" data-id="${next.id}">${icon('check')} Marcar como completada</button>
+        <button type="button" class="btn btn--secondary" id="open-${next.id}" data-action="open-activity" data-id="${next.id}">Ver detalle</button>
       </div>
     </section>`;
 }

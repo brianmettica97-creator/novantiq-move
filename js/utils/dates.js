@@ -55,6 +55,12 @@ export function weekDays(weekStartIso) {
   return Array.from({ length: 7 }, (_, i) => addDays(weekStartIso, i));
 }
 
+/** Cantidad de semanas entre dos inicios de semana (negativa si `toIso` es anterior). */
+export function weeksBetween(fromIso, toIso) {
+  // Math.round absorbe la hora de diferencia que puede haber por horario de verano
+  return Math.round((parseISODate(toIso) - parseISODate(fromIso)) / (7 * 24 * 60 * 60 * 1000));
+}
+
 // ---------- Formato para mostrar ----------
 
 export function formatLongDate(iso) {

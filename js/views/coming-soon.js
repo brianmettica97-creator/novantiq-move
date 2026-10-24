@@ -26,25 +26,6 @@ function comingSoonView({ title, banner, intro, items, notice }) {
   };
 }
 
-export const plansView = comingSoonView({
-  title: 'Planes y plantillas',
-  banner: {
-    eyebrow: 'Planes y plantillas',
-    title: 'Semanas listas para empezar',
-    text: 'Elegí una plantilla, sumala a tu semana y adaptala a tu ritmo.',
-    image: 'assets/images/sections/plans.webp',
-    alt: 'Persona levantando una barra en el gimnasio',
-  },
-  intro: 'Una biblioteca de semanas de ejemplo para gimnasio, running, caminatas, entrenamiento en casa y actividad multideportiva.',
-  items: [
-    'Filtros por actividad, nivel, duración, objetivo y equipamiento.',
-    'Vista previa del contenido de cada plantilla.',
-    'Incorporar una plantilla a la semana que elijas, sin duplicar actividades.',
-    'Editar o quitar las actividades incorporadas sin modificar la plantilla original.',
-  ],
-  notice: 'Las plantillas son ejemplos generales de organización: no son prescripciones médicas ni programas personalizados.',
-});
-
 export const nutritionView = comingSoonView({
   title: 'Nutrición',
   banner: {

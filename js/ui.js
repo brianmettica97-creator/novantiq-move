@@ -14,7 +14,13 @@ let lastFocused = null;
  * `onOpen(dialogElement)` permite a quien lo llama conectar sus eventos (por ejemplo, un formulario).
  */
 export function openDialog({ title, content, onOpen }) {
-  lastFocused = document.activeElement;
+  // Si ya hay un diálogo abierto (por ejemplo, del detalle se pasa a "Editar"),
+  // se reemplaza el contenido y se conserva el elemento al que volver el foco.
+  if (!dialog.open) lastFocused = document.activeElement;
+  // Redibujar el mismo diálogo (por ejemplo, al tildar una tarea) conserva el desplazamiento y el foco
+  const isRefresh = dialog.open && dialog.dataset.title === title;
+  const previousScroll = dialog.scrollTop;
+  dialog.dataset.title = title;
   render(dialog, html`
     <header class="dialog__header">
       <h2 class="dialog__title" id="app-dialog-title">${title}</h2>
@@ -22,8 +28,48 @@ export function openDialog({ title, content, onOpen }) {
     </header>
     <div class="dialog__body">${content}</div>
   `);
-  dialog.showModal();
+  if (!dialog.open) dialog.showModal();
+  if (isRefresh) {
+    dialog.scrollTop = previousScroll;
+  } else {
+    // Foco inicial: el elemento marcado con autofocus, el primer campo de un formulario
+    // o, si no hay, el propio diálogo (así no salta hasta el final del contenido).
+    (dialog.querySelector('[autofocus], .dialog__body form .field__input') ?? dialog).focus({ preventScroll: true });
+    dialog.scrollTop = 0;
+  }
   onOpen?.(dialog);
+}
+
+/**
+ * Diálogo de confirmación para acciones destructivas o con conflictos.
+ * Devuelve una promesa: true si la persona confirma, false si cancela o cierra.
+ */
+export function confirmDialog({ title, message, confirmLabel = 'Confirmar', danger = false }) {
+  return new Promise((resolve) => {
+    let confirmed = false;
+    openDialog({
+      title,
+      content: html`
+        <p class="dialog__message">${message}</p>
+        <div class="dialog__footer">
+          <button type="button" class="btn btn--ghost" data-dialog-close autofocus>Cancelar</button>
+          <button type="button" class="btn ${danger ? 'btn--danger' : 'btn--primary'}" data-confirm>${confirmLabel}</button>
+        </div>
+      `,
+      onOpen(dialogEl) {
+        dialogEl.querySelector('[data-confirm]').addEventListener('click', () => {
+          confirmed = true;
+          closeDialog();
+        });
+        dialogEl.addEventListener('close', () => resolve(confirmed), { once: true });
+      },
+    });
+  });
+}
+
+/** Pide a la app que vuelva a dibujar la vista actual (para cambios de interfaz que no tocan el estado, como filtros). */
+export function requestRender() {
+  document.dispatchEvent(new CustomEvent('app:render'));
 }
 
 export function closeDialog() {
@@ -35,8 +81,16 @@ dialog.addEventListener('click', (event) => {
   if (event.target.closest('[data-dialog-close]') || event.target === dialog) closeDialog();
 });
 dialog.addEventListener('close', () => {
+  // El evento "close" llega de forma asíncrona: si mientras tanto se abrió otro
+  // diálogo, no hay que borrar su contenido.
+  if (dialog.open) return;
   render(dialog, '');
-  lastFocused?.focus?.(); // devuelve el foco a donde estaba el usuario
+  delete dialog.dataset.title;
+  // Devuelve el foco a donde estaba la persona; si ese elemento ya no existe
+  // (la vista se volvió a dibujar), lo busca por id o va al título de la sección.
+  const target = lastFocused?.isConnected ? lastFocused
+    : (lastFocused?.id && document.getElementById(lastFocused.id)) || document.getElementById('view-title');
+  target?.focus?.();
 });
 
 // ---------- Avisos breves ----------
