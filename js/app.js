@@ -12,6 +12,8 @@ import * as profileView from './views/profile.js';
 import * as plansView from './views/plans.js';
 import * as nutritionView from './views/nutrition.js';
 import * as progressView from './views/progress.js';
+import { FEEDBACK_URL } from './config.js';
+import { maybeShowOnboarding, startSample, confirmClearSample, sampleBanner } from './views/onboarding.js';
 
 const main = document.getElementById('main');
 
@@ -30,6 +32,8 @@ const globalActions = {
   'add-activity': (button) => weekView.openActivityForm({ date: button.dataset.date }),
   'open-activity': (button) => weekView.openActivityDetail(button.dataset.id),
   'toggle-complete': (button) => weekView.toggleFromList(button.dataset.id),
+  'load-sample': () => startSample(),
+  'clear-sample': () => confirmClearSample(),
 };
 
 let currentView = null;
@@ -43,7 +47,8 @@ let viewElement = null;
 function refresh() {
   if (!viewElement) return;
   const focusedId = viewElement.contains(document.activeElement) ? document.activeElement.id : '';
-  render(viewElement, currentView.render(getState()));
+  const state = getState();
+  render(viewElement, [sampleBanner(state), currentView.render(state)]);
   if (focusedId) document.getElementById(focusedId)?.focus({ preventScroll: true });
 }
 
@@ -111,6 +116,13 @@ async function start() {
   subscribe(refresh);
 
   createRouter(routes, { fallback: 'inicio', onChange: showRoute }).start();
+  document.getElementById('nav-feedback')?.setAttribute('href', FEEDBACK_URL);
+  maybeShowOnboarding();
+
+  // App instalable y disponible sin conexión (ver sw.js). Solo funciona por http(s).
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('./sw.js').catch(() => { /* sin service worker la app funciona igual */ });
+  }
 }
 
 start();

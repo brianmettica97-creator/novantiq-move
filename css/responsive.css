@@ -142,3 +142,6 @@
 @media (max-width: 639px) {
   .column:nth-child(odd) .column__label { visibility: hidden; }
 }
+@media (min-width: 1024px) {
+  .nav__note a { display: inline-block; margin-top: var(--space-2); color: var(--accent); font-weight: 600; min-height: 24px; }
+}

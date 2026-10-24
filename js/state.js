@@ -19,6 +19,7 @@ function createInitialState() {
       weekStart: 'monday',        // 'monday' | 'sunday'
       favoriteActivities: [],     // ids de categorías: aparecen primero al crear actividades
       display: { largeText: false, reduceMotion: false },
+      onboarded: false,           // true cuando se completó u omitió la bienvenida
     },
     activities: [],          // actividades programadas (copias propias del usuario)
     templateApplications: [], // [{ id, templateId, weekStart, appliedAt }]
@@ -27,7 +28,16 @@ function createInitialState() {
     nutritionPrefs: { goals: [] }, // preferencias generales; nunca activan dietas ni restricciones
     habits: [],               // hábitos opcionales definidos por el usuario
     habitLogs: [],            // [{ id, habitId, date }]
+    sampleData: null,         // { loadedAt } mientras haya datos de ejemplo cargados
   };
+}
+
+/**
+ * Reemplaza todo el estado por datos importados (ya validados por import-export.js).
+ * Pasan por migrate() para completar campos faltantes de versiones anteriores.
+ */
+export function replaceState(data) {
+  setState(() => migrate(data));
 }
 
 /** Vuelve al estado inicial y borra lo guardado (opción "Borrar mis datos" del perfil). */
@@ -47,13 +57,19 @@ let onStorageError = () => {};
  * Completa datos guardados con los valores por defecto y los lleva a la versión
  * actual del esquema. Cuando cambie la estructura, acá se agregan migraciones.
  */
-function migrate(saved) {
+export function migrate(saved) {
   const base = createInitialState();
-  if (!saved || typeof saved !== 'object') return base;
+  if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return base;
   return {
     ...base,
     ...saved,
-    profile: { ...base.profile, ...saved.profile, display: { ...base.profile.display, ...saved.profile?.display } },
+    profile: {
+      ...base.profile,
+      ...saved.profile,
+      display: { ...base.profile.display, ...saved.profile?.display },
+      // Quien ya venía usando la app (datos de versiones anteriores) no vuelve a ver la bienvenida
+      onboarded: saved.profile?.onboarded ?? true,
+    },
     activities: Array.isArray(saved.activities) ? saved.activities : [],
     shoppingList: Array.isArray(saved.shoppingList) ? saved.shoppingList : [],
     mealPlan: saved.mealPlan && typeof saved.mealPlan === 'object' ? saved.mealPlan : {},

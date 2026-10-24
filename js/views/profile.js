@@ -3,8 +3,10 @@
 
 import { html, icon } from '../utils/dom.js';
 import { sectionBanner, toast, showFieldErrors, confirmDialog } from '../ui.js';
-import { getState, setState, resetState, SCHEMA_VERSION } from '../state.js';
-import { today } from '../utils/dates.js';
+import { setState, resetState, replaceState } from '../state.js';
+import { downloadExport, parseImport, MAX_IMPORT_BYTES } from '../import-export.js';
+import { hasSampleData } from '../sample-data.js';
+import { FEEDBACK_URL } from '../config.js';
 import { CATEGORIES } from '../../data/categories.js';
 import { NUTRITION_GOALS } from '../recipes.js';
 import { showTab } from './nutrition.js';
@@ -12,6 +14,7 @@ import { showTab } from './nutrition.js';
 export const title = 'Mi perfil';
 
 const NAME_MAX = 40;
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 export function render(state) {
   const { profile } = state;
@@ -98,19 +101,70 @@ export function render(state) {
         <div class="card__header"><h2 class="card__title" id="data-title">${icon('layers')} Tus datos</h2></div>
         <p class="card__text">Todo se guarda solo en este navegador. Todavía no hay cuentas ni sincronización entre dispositivos: si borrás los datos del navegador o usás otro dispositivo, no vas a ver esta información.</p>
         <ul class="data-summary">
-          <li>${counts.activities} actividades</li>
-          <li>${counts.meals} comidas planificadas</li>
-          <li>${counts.shopping} productos en compras</li>
-          <li>${counts.habits} hábitos</li>
+          <li>${plural(counts.activities, 'actividad', 'actividades')}</li>
+          <li>${plural(counts.meals, 'comida planificada', 'comidas planificadas')}</li>
+          <li>${plural(counts.shopping, 'producto', 'productos')} en compras</li>
+          <li>${plural(counts.habits, 'hábito', 'hábitos')}</li>
         </ul>
         <div class="btn-row card__actions">
           <button type="button" class="btn btn--secondary" id="export-data" data-action="export-data">Exportar mis datos (JSON)</button>
+          <button type="button" class="btn btn--secondary" id="import-data" data-action="import-data">Importar datos</button>
+          <input type="file" id="import-file" accept="application/json,.json" data-change="import-file" hidden>
           <button type="button" class="btn btn--ghost btn--danger-text" id="delete-data" data-action="delete-data" ${hasData ? '' : 'disabled'}>Borrar mis datos</button>
         </div>
+        <p class="field__hint">Para pasar tus datos a otro dispositivo: exportá acá, abrí la app en el otro dispositivo e importá el archivo.</p>
+      </section>
+
+      <section class="card" aria-labelledby="sample-title">
+        <div class="card__header"><h2 class="card__title" id="sample-title">${icon('layers')} Datos de ejemplo</h2></div>
+        ${hasSampleData(state)
+          ? html`<p class="card__text">Tenés una semana de ejemplo cargada. Podés borrarla sin perder lo que agregaste vos.</p>
+              <div class="btn-row card__actions"><button type="button" class="btn btn--secondary" id="clear-sample" data-action="clear-sample">Borrar datos de ejemplo</button></div>`
+          : html`<p class="card__text">Cargá actividades, comidas y hábitos de ejemplo para ver cómo funciona cada sección. Se marcan como ejemplo y se borran con un toque.</p>
+              <div class="btn-row card__actions"><button type="button" class="btn btn--secondary" id="load-sample" data-action="load-sample">Cargar datos de ejemplo</button></div>`}
+      </section>
+
+      <section class="card" aria-labelledby="feedback-title">
+        <div class="card__header"><h2 class="card__title" id="feedback-title">${icon('info')} Ayudanos a mejorar</h2></div>
+        <p class="card__text">NOVANTIQ Move está en etapa de prueba. Contanos qué te falta, qué no entendiste o qué falló.</p>
+        <div class="btn-row card__actions">
+          <a class="btn btn--primary" href="${FEEDBACK_URL}" target="_blank" rel="noopener">Enviar sugerencia o reportar un error</a>
+        </div>
+        <p class="field__hint">Se abre en una pestaña nueva. Nunca se envían tus datos de la app.</p>
       </section>
     </div>
   `;
 }
+
+export const changes = {
+  async 'import-file'(input) {
+    const file = input.files?.[0];
+    input.value = ''; // permite volver a elegir el mismo archivo
+    if (!file) return;
+    if (file.size > MAX_IMPORT_BYTES) {
+      toast('El archivo es demasiado grande para ser una exportación de NOVANTIQ Move.', { type: 'error' });
+      return;
+    }
+    const result = parseImport(await file.text());
+    if (!result.ok) {
+      toast(result.message, { type: 'error', duration: 6000 });
+      return;
+    }
+    const { summary } = result;
+    const when = summary.exportedAt ? ` exportado el ${new Date(summary.exportedAt).toLocaleDateString('es-AR')}` : '';
+    const ok = await confirmDialog({
+      title: 'Importar datos',
+      message: `El archivo${when} tiene ${plural(summary.activities, 'actividad', 'actividades')}, ${plural(summary.meals, 'comida planificada', 'comidas planificadas')}, ${plural(summary.shopping, 'producto', 'productos')} en compras y ${plural(summary.habits, 'hábito', 'hábitos')}.`
+        + (result.discarded ? ` Se ${result.discarded === 1 ? 'descartará 1 registro dañado' : `descartarán ${result.discarded} registros dañados`}.` : '')
+        + ' Tus datos actuales en este navegador se van a reemplazar.',
+      confirmLabel: 'Importar y reemplazar',
+      danger: true,
+    });
+    if (!ok) return;
+    replaceState(result.data);
+    toast('Datos importados.');
+  },
+};
 
 export const forms = {
   profile(form) {
@@ -140,16 +194,12 @@ export const actions = {
   'open-nutrition-prefs': () => showTab('prefs'), // el enlace navega; esto elige la pestaña
 
   'export-data': () => {
-    const payload = { app: 'NOVANTIQ Move', schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString(), data: getState() };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `novantiq-move-datos-${today()}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadExport();
     toast('Archivo de datos descargado.');
   },
+
+  'import-data': () => document.getElementById('import-file')?.click(),
+
 
   'delete-data': async () => {
     const ok = await confirmDialog({

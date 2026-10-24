@@ -1,0 +1,47 @@
+name: 🐞 Algo no funciona
+description: Reportá un error o algo que no se ve o no se comporta como esperabas.
+title: "[Error] "
+labels: ["error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por avisarnos. Si podés, sumá una captura de pantalla. No compartas datos personales ni de salud.
+  - type: textarea
+    id: que-paso
+    attributes:
+      label: ¿Qué pasó?
+      placeholder: "Ej.: Al mover una actividad al domingo desapareció de la semana."
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: ¿Qué estabas haciendo?
+      description: Los pasos para que podamos repetirlo.
+      placeholder: |
+        1. Fui a Mi semana
+        2. Abrí una actividad y toqué "Mover"
+        3. ...
+  - type: dropdown
+    id: dispositivo
+    attributes:
+      label: Dispositivo
+      options:
+        - Celular Android
+        - iPhone
+        - Tablet
+        - Computadora
+    validations:
+      required: true
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador
+      placeholder: "Ej.: Chrome, Safari, Firefox"
+  - type: checkboxes
+    id: instalada
+    attributes:
+      label: Forma de uso
+      options:
+        - label: La tengo instalada en la pantalla de inicio

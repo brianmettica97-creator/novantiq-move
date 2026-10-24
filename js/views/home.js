@@ -28,7 +28,8 @@ export function render(state) {
           <p class="hero__text">Organizá tu semana, mantené tus hábitos y seguí tu progreso en un solo lugar.</p>
           <div class="btn-row hero__actions">
             <button type="button" class="btn btn--primary" data-action="add-activity">${icon('plus')} Agregar actividad</button>
-            ${name ? '' : html`<a class="btn btn--secondary" href="#/perfil">Contanos cómo llamarte</a>`}
+            ${state.activities.length || state.sampleData ? '' : html`<button type="button" class="btn btn--secondary" data-action="load-sample">${icon('layers', 'icon--sm')} Ver un ejemplo</button>`}
+            ${name || !state.activities.length ? '' : html`<a class="btn btn--secondary" href="#/perfil">Contanos cómo llamarte</a>`}
           </div>
         </div>
       </section>

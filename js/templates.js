@@ -59,6 +59,22 @@ function sessionDate(weekStartIso, day) {
 }
 
 /**
+ * Copias de las sesiones de una plantilla para una semana, listas para agregar al estado.
+ * `extra` permite marcar campos adicionales (por ejemplo, `sample: true` en los datos de ejemplo).
+ */
+export function buildTemplateActivities(template, weekStartIso, applicationId, extra = {}) {
+  return template.sessions.map((session) => buildActivity({
+    name: session.name,
+    category: session.category,
+    date: sessionDate(weekStartIso, session.day),
+    durationMin: session.durationMin ?? null,
+    intensity: session.intensity ?? '',
+    description: session.description ?? '',
+    tasks: session.tasks.map((text) => ({ id: createId(), text, done: false })),
+  }, { templateId: template.id, applicationId, sessionKey: session.key, ...extra }));
+}
+
+/**
  * Analiza qué pasaría al aplicar una plantilla, sin modificar nada:
  *   existing      → aplicación previa de la misma plantilla en esa semana (o null)
  *   conflictDays  → días que ya tienen otras actividades del usuario
@@ -93,17 +109,8 @@ export function applyTemplate(templateId, weekStartIso) {
     const keptKeys = new Set(kept.map((a) => a.sessionKey));
     const applicationId = existing?.id ?? createId();
 
-    const newActivities = template.sessions
-      .filter((session) => !keptKeys.has(session.key))
-      .map((session) => buildActivity({
-        name: session.name,
-        category: session.category,
-        date: sessionDate(weekStartIso, session.day),
-        durationMin: session.durationMin ?? null,
-        intensity: session.intensity ?? '',
-        description: session.description ?? '',
-        tasks: session.tasks.map((text) => ({ id: createId(), text, done: false })),
-      }, { templateId, applicationId, sessionKey: session.key }));
+    const newActivities = buildTemplateActivities(template, weekStartIso, applicationId)
+      .filter((activity) => !keptKeys.has(activity.sessionKey));
     created = newActivities.length;
 
     const activities = s.activities

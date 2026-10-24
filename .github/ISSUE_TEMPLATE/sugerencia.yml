@@ -1,0 +1,44 @@
+name: 💡 Sugerencia
+description: Proponé algo que te gustaría que NOVANTIQ Move tenga o haga distinto.
+title: "[Sugerencia] "
+labels: ["sugerencia"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ¡Gracias por probar NOVANTIQ Move! Contanos qué te falta. No compartas datos personales ni de salud.
+  - type: dropdown
+    id: seccion
+    attributes:
+      label: ¿Sobre qué sección?
+      options:
+        - Inicio
+        - Mi semana
+        - Planes y plantillas
+        - Nutrición
+        - Mi progreso
+        - Mi perfil
+        - En general
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: ¿Qué te gustaría?
+      description: Describí la idea con tus palabras.
+      placeholder: "Ej.: Me gustaría poder repetir una actividad todas las semanas."
+    validations:
+      required: true
+  - type: textarea
+    id: para-que
+    attributes:
+      label: ¿Para qué te serviría?
+      description: Contanos qué estabas intentando hacer. Esto nos ayuda a priorizar.
+  - type: dropdown
+    id: importancia
+    attributes:
+      label: ¿Qué tan importante es para vos?
+      options:
+        - Sería un lindo detalle
+        - Me ayudaría bastante
+        - Sin esto no usaría la app
